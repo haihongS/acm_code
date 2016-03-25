@@ -20,7 +20,7 @@ Blog          :http://haihongblog.com
 #include <stack>
 using namespace std;
 typedef long long LL;
-const int maxn=1e5+9;
+const int maxn=2e5+9;
 const int inf=1e9+9;
 
 int n,q;
@@ -37,15 +37,15 @@ int main()
     //freopen("out.txt","w",stdout);
     while(~scanf("%d%d",&n,&q))
 	{
-
-		for(int i=0;i<n;i++) scanf("%lld",&num[i]);
+		for(int i=1;i<=n;i++) scanf("%lld",&num[i]);
 		build(0,1,n);
 		for(int i=0;i<q;i++)
 		{
-			char op;
-			scanf("%c",&op);
-			int a,b,c;
-			if(op=='Q')
+			char op[5];
+			scanf("%s",op);
+			int a,b;
+			LL c;
+			if(op[0]=='Q')
 			{
 				scanf("%d%d",&a,&b);
 				LL go=query(0,1,n,a,b);
@@ -53,7 +53,7 @@ int main()
 			}
 			else
 			{
-				scanf("%d%d%d",&a,&b,&c);
+				scanf("%d%d%lld",&a,&b,&c);
 				update(0,1,n,a,b,c);
 			}
 		}
@@ -71,12 +71,12 @@ int update(int node,int l,int r,int L,int R,LL v)
 		return 0;
 	}
 	int mid=l+(r-l)/2;
-	if(L<=mid) update(2*node+1,l,mid,L,R,v);
-	if(R>mid) update(2*node+2,mid+1,r,L,R,v);
-	sum[node]=sum[2*node+1]+sum[2*node+2];
+		push(node);
+		if(L<=mid)update(2*node+1,l,mid,L,R,v);
+		if(R>mid)update(2*node+2,mid+1,r,L,R,v);
+		sum[node]=sum[2*node+1]+sum[2*node+2];
 	return 0;
 }
-
 
 int push(int node)
 {
@@ -93,29 +93,15 @@ int push(int node)
 
 LL query(int node,int l,int r,int L,int R)
 {
-	push(node);
 	if(L<=l && r<=R)
 	{
 		return sum[node];
 	}
+	push(node);
 	int mid=l+(r-l)/2;
 	LL ans=0;
-	if(L<=mid)
-	{
-		if(R>=mid)
-		{
-			ans+=query(2*node+1,l,mid,L,mid);
-			ans+=query(2*node+2,mid+1,r,mid+1,R);
-		}
-		else
-		{
-			ans+=query(2*node+1,l,mid,L,R);
-		}
-	}
-	else
-	{
-		ans+=query(2*node+2,mid+1,r,L,R);
-	}
+	if(L<=mid)ans+=query(2*node+1,l,mid,L,R);
+	if(R>mid)ans+=query(2*node+2,mid+1,r,L,R);
 	return ans;
 }
 
