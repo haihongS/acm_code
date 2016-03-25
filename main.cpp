@@ -37,6 +37,7 @@ int main()
     //freopen("out.txt","w",stdout);
     while(~scanf("%d%d",&n,&q))
 	{
+
 		for(int i=0;i<n;i++) scanf("%lld",&num[i]);
 		build(0,1,n);
 		for(int i=0;i<q;i++)
