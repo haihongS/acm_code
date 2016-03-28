@@ -56,8 +56,8 @@ int main()
 		LL x=num[i].x, v=num[i].v;
 		LL pre=getsum((int)x),cc=(LL)getcnt((int)x);
 		//ans+=(cc*x-pre)*v+(getsum(maxn)-pre-x*((LL)(i)-cc))*v;
-		ans+=v*(getsum(maxn)-pre*2+2*x*cc-x*(LL)(i));'
-		//ans+=v*(cc*x-pre+(getsum(maxn)-pre)-((LL)(i)-cc)*x);
+	//	ans+=v*(getsum(maxn)-pre*2+2*x*cc-x*(LL)(i));'
+		ans+=v*(cc*x-pre+(getsum(maxn)-pre)-((LL)(i)-cc)*x);
 		addsum((int)x,x);
 		addcnt((int)x,1);
 	}
