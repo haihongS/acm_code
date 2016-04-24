@@ -37,10 +37,7 @@ int deal();
 int lowbit(int x);
 void add(int x,int v);
 int query(int x);
-int bit1(int lt,int rt,int v);
-int bit2(int lt,int rt,int v);
-int bit3(int lt,int rt,int v);
-int bit4(int lt,int rt,int v);
+int bit(int lt,int rt,int v);
 
 int main()
 {
@@ -62,14 +59,15 @@ int main()
 
     while(~scanf("%d%d",&n,&k))
 	{
-		int loca,tmp=-1;
+		int loca,stmp=-1;
 		for(int i=1;i<=n;i++)
 		{
-			if(flag[i]>tmp)
+			if(flag[i]>stmp)
 			{
-				tmp=flag[i];loca=i;
+				stmp=flag[i];loca=i;
 			}
 		}
+		memset(c,0,sizeof(c));
 		for(int i=1;i<=n;i++)
 		{
 			scanf("%s%d",duru[i].name,&duru[i].dir);
@@ -82,114 +80,49 @@ int main()
 			add(dd,-1);
 			if(go>0)
 			{
-				go=go%(n-i);
+				int tmp=go%(n-i);
+				if(tmp==0) tmp=n-i;
+				int next;
 				int t1=query(n),t2=query(dd);
-				if(t1-t2>=go)
-				{
-					dd=bit1(dd,n,go);continue;
-				}
-				else
-				{
-					go-=(t1-t2);
-					dd=bit2(1,dd,go);continue;
-				}
+				if(t1-t2>=tmp)
+                    next=bit(dd,n,tmp+t2);
+                else
+                    next=bit(1,dd,tmp-(t1-t2));
+				dd=next;continue;
 			}
 			else
 			{
-				go=go%(n-i);
-				go%=n;
-				int t1=query(dd);
-				if(t1>=go)
-				{
-					dd=bit3(1,dd,go);continue;
-				}
-				else
-				{
-					go-=t1;
-					dd=bit4(dd,n,go);continue;
-				}
+				int tmp;
+			    tmp=go%(n-i);
+			    if(tmp<0) tmp=-tmp;
+			    if(tmp==0) tmp=n-i;
+                int next;
+                int t1=query(dd);
+                if(t1>=tmp)
+                    next=bit(1,dd,t1-tmp+1);
+                else
+                    next=bit(dd+1,n,query(n)-(tmp-t1)+1);
+				dd=next;continue;
 			}
 		}
-		printf("%s %d\n",duru[dd].name,tmp);
-
-
+		printf("%s %d\n",duru[dd].name,stmp);
 	}
     return 0;
 }
 
-int bit4(int lt,int rt,int v)
+int bit(int lt,int rt,int v)
 {
-	int low=lt,up=rt,mid;
-	int ans=rt;
-	int tmp1=query(rt);
-	while(low<=up)
-	{
-		int mid=low+(up-low)/2;
-		int tmp2=query(mid);
-		if(tmp1-tmp2<=v)
-		{
-			ans=min(ans,mid);
-			up=mid-1;
-		}
-		else
-			low=mid+1;
-	}
-	return ans;
-}
-
-int bit3(int lt,int rt,int v)
-{
-	int low=lt,up=rt,mid;
-	int ans=rt;
-	while(low<=up)
-	{
-		int mid=low+(up-low)/2;
-		int tmp1=query(mid),tmp2=query(rt);
-		if(tmp2-tmp1<=v)
-		{
-			ans=min(ans,mid);
-			up=mid-1;
-		}
-		else
-			low=mid+1;
-	}
-	return ans;
-}
-
-int bit2(int lt,int rt,int v)
-{
-	int low=lt,up=rt,mid;
-	int ans=lt;
-	while(low<=up)
-	{
-		int mid=low+(up-low)/2;
-		int tmp1=query(mid);
-		if(tmp1<=v)
-		{
-			ans=max(ans,mid);
-			low=mid+1;
-		}
-		else
-			up=mid-1;
-	}
-	return ans;
-}
-
-int bit1(int lt,int rt,int v)
-{
-	int low=lt,up=rt,mid;
-	int ans=lt;
+	int low=lt,up=rt,mid,ans=rt;
 	while(low<=up)
 	{
 		mid=low+(up-low)/2;
-		int tmp1=query(mid),tmp2=query(lt);
-		if(tmp1-tmp2>v)
-			up=mid-1;
-		else
+		if(query(mid)>=v)
 		{
-			low=mid+1;
-			ans=max(ans,mid);
+			ans=min(ans,mid);
+			up=mid-1;
 		}
+		else
+			low=mid+1;
 	}
 	return ans;
 }
@@ -225,3 +158,4 @@ int lowbit(int x)
 {
 	return x&(-x);
 }
+
