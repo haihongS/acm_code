@@ -7,7 +7,7 @@
 #include <vector>
 
 using namespace std;
-const int maxn = 2e5 + 9;
+const int maxn = 2e5 + 9; 
 
 int num[maxn];
 int fa[maxn];
